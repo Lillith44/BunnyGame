@@ -13,15 +13,15 @@ Entity = function (type, id, x, y, width, height, img) {
 		height: height,
 		img: img,
 		};
-		self.update = function() {
-			self.updatePosition();
-			self.draw();
-		}
-		self.draw = function() {
-	ctx.save();
+	self.update = function() {
+		self.updatePosition();
+		self.draw();
+	}
+	self.draw = function() {
+		ctx.save();
 	
-	var x = self.x - player.x;
-	var y = self.y - player.y;
+		var x = self.x - player.x;
+		var y = self.y - player.y;
 	
 	x += WIDTH/2;
 	y += HEIGHT/2;
@@ -33,7 +33,7 @@ Entity = function (type, id, x, y, width, height, img) {
 	
 	ctx.restore();
 	}
-		self.updatePosition = function(){}
+	
 	self.getDistance= function ( entity2) {   //return distance (number)
 	var vx = self.x - entity2.x;
 	var vy = self.y - entity2.y;
@@ -53,7 +53,8 @@ Entity = function (type, id, x, y, width, height, img) {
 		height:entity2.height,
 	}
 	return textCollisionRectRect(rect1, rect2);
-};
+}
+	self.updatePosition = function(){}
 	return self;
 	}
 
@@ -71,7 +72,11 @@ Actor = function (type, id, x, y, width, height,img, hp, atkSpd) {
  self.update = function () {
 	super_update();
 	self.attackCounter += self.atkSpd;
+		if(self.hp <= 0) 
+			self.onDeath();
 }
+self.onDeath = function(){};
+
  self.performAttack = function() {
 	if(self.attackCounter > 25){	//every 1 sec
 			self.attackCounter = 0;
@@ -119,19 +124,12 @@ self.updatePosition = function() {
 				if(self.y > currentMap.height - self.height/2)
 					self.y = currentMap.height - self.height/2;
 			}
-		var super_update = self.update;
-
-		self.update = function () {
-		super_update();
-		if (self.hp <= 0) {
-			var timeSurvived = Date.now() - timeWhenGameStarted;
-			
-			console.log('You lost! You survived for ' + timeSurvived + 'ms');
-			
-			startNewGame();
+			self.onDeath = function(){
+				var timeSurvived = Date.now() - timeWhenGameStarted;
+				console.log('You lost! You survived for ' + timeSurvived + 'ms');
+				startNewGame();
 			}
-		}
-
+	
 	self.pressingDown=false;
 	self.pressingUp= false;
 	self.pressingLeft= false;
@@ -141,24 +139,29 @@ self.updatePosition = function() {
 }
  
 
-Enemy = function (id,x, y, width, height) {
-	var self = Actor('enemy', id, x, y, width, height, Img.enemy, 10, 1) 
+Enemy = function (id,x, y, width, height, img, hp, atkSpd) {
+	var self = Actor('enemy', id, x, y, width, height, img, hp, atkSpd) 
+	enemyList[id] = self;
+	
+	self.toRemove = false;
+	
 	var super_update = self.update;
 	self.update = function() {
 		super_update();
-		self.performAttack();
 		self.updateAim();
-			}
-	enemyList[id] = self;
-	
-
+		self.performAttack();
+	}
 	self.updateAim = function() {
 		var diffX = player.x - self.x;
 		var diffY = player.y - self.y;
 
 		self.aimAngle = Math.atan2(diffY, diffX) / Math.PI *180
 	}
-
+	
+	self.onDeath = function(){
+		self.toRemove = true;
+	}
+	
 	self.updatePosition = function(){
 		var diffX = player.x - self.x;
 		var diffY = player.y - self.y;
@@ -181,29 +184,19 @@ randomlyGenerateEnemy = function() {
 	var height = 70
 	var width = 40
 	var id = Math.random();
-	Enemy(id,x, y, width, height);
+	if(Math.random() <0.5)
+		Enemy(id,x, y, width, height, Img.goat, 3, 1);
+	else
+		Enemy(id,x, y, width, height, Img.crow, 1, 3);
 }
 
 upgrade = function ( id,x, y,  width, height, img, category) {
 var self = Entity('upgrade', id, x, y, width, height, img) 
 
-var super_update =  self.update;
-self.update = function() {
-super_update();
-var isColliding = player.testCollision( self);
-	if(isColliding){
-		if(self.category === 'score') 
-			score += 100;
-		if(self.category=== 'atkSpd')  
-			player.atkSpd += 3;
-		
-		delete upgradeList[self.id];
-		
-		}
-		}
 	self.category = category,
 	upgradeList[id] = self;
 }
+
 randomlyGenerateUpgrade= function() {
 	var x  = Math.random()*currentMap.width;
 	var y = Math.random()*currentMap.height;
