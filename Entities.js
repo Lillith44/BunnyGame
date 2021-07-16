@@ -3,14 +3,12 @@ var enemyList = {};
 var upgradeList = {};
 var bulletList = {};
 
-Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
+Entity = function (type, id, x, y, width, height, img) {
 	var self = {
 		type: type,
 		id:id,
 		x : x, 
-		spdX : spdX,
 		y : y, 
-		spdY : spdY,
 		width: width, 
 		height: height,
 		img: img,
@@ -35,17 +33,7 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 	
 	ctx.restore();
 	}
-		self.updatePosition = function() {
-			self.x += self.spdX;
-			self.y += self.spdY;
-					
-			if(self.x < 0 || self.x > currentMap.width){
-				self.spdX = -self.spdX;
-			}
-			if(self.y < 0 || self.y > currentMap.height){
-				self.spdY = -self.spdY;
-			}
-		}
+		self.updatePosition = function(){}
 	self.getDistance= function ( entity2) {   //return distance (number)
 	var vx = self.x - entity2.x;
 	var vy = self.y - entity2.y;
@@ -71,8 +59,8 @@ Entity = function (type, id, x, y, spdX, spdY, width, height, img) {
 
 
 
-Actor = function (type, id, x, y, spdX, spdY, width, height,img, hp, atkSpd) {
- var self = Entity(type, id, x, y, spdX, spdY, width, height, img);
+Actor = function (type, id, x, y, width, height,img, hp, atkSpd) {
+ var self = Entity(type, id, x, y, width, height, img);
  
  self.hp = hp;
  self.attackCounter = 0;
@@ -108,7 +96,7 @@ return self;
 }
 
 Player = function() {
-var self = Actor('player', 'myId', 50, 40, 30, 5, 50, 45, Img.player, 10, 1)
+var self = Actor('player', 'myId', 50, 40, 50, 45, Img.player, 10, 1)
 
 self.updatePosition = function() {
 
@@ -153,15 +141,38 @@ self.updatePosition = function() {
 }
  
 
-Enemy = function (id,x, y, spdX, spdY, width, height) {
-	var self = Actor('enemy', id, x, y, spdX, spdY, width, height, Img.enemy, 10, 1) 
+Enemy = function (id,x, y, width, height) {
+	var self = Actor('enemy', id, x, y, width, height, Img.enemy, 10, 1) 
 	var super_update = self.update;
 	self.update = function() {
-	super_update();
-	self.performAttack();
-	
-		}
+		super_update();
+		self.performAttack();
+		self.updateAim();
+			}
 	enemyList[id] = self;
+	
+
+	self.updateAim = function() {
+		var diffX = player.x - self.x;
+		var diffY = player.y - self.y;
+
+		self.aimAngle = Math.atan2(diffY, diffX) / Math.PI *180
+	}
+
+	self.updatePosition = function(){
+		var diffX = player.x - self.x;
+		var diffY = player.y - self.y;
+
+		if(diffX > 0) 
+			self.x += 3;
+		else 
+			self.x -= 3;
+		
+		if(diffY > 0)
+			self.y += 3;
+		else
+			self.y -= 3;
+	}
 };
 
 randomlyGenerateEnemy = function() {
@@ -170,13 +181,11 @@ randomlyGenerateEnemy = function() {
 	var height = 70
 	var width = 40
 	var id = Math.random();
-	var spdX = 5 + Math.random() * 7;
-	var spdY = 5 + Math.random() * 7;
-	Enemy(id,x, y,spdX,  spdY,  width, height);
+	Enemy(id,x, y, width, height);
 }
 
-upgrade = function ( id,x, y, spdX, spdY,  width, height, img, category) {
-var self = Entity('upgrade', id, x, y, spdX, spdY, width, height, img) 
+upgrade = function ( id,x, y,  width, height, img, category) {
+var self = Entity('upgrade', id, x, y, width, height, img) 
 
 var super_update =  self.update;
 self.update = function() {
@@ -201,8 +210,6 @@ randomlyGenerateUpgrade= function() {
 	var height = 20 ;
 	var width = 32 ;
 	var id = Math.random();
-	var spdX = 0;
-	var spdY = 0;
 	
 	if (Math.random() <0.5) {
 		var category = 'score';
@@ -212,15 +219,31 @@ randomlyGenerateUpgrade= function() {
 		var img = Img.update2;
 	}
 	
-	upgrade(id, x, y, spdX, spdY, width, height, img ,category);
+	upgrade(id, x, y, width, height, img ,category);
 }
 
-bullet = function (id,x, y,spdX,  spdY,  width, height, combatType) {
-var self = Entity('bullet', id, x, y, spdX, spdY, width, height, Img.bullet) 
+bullet = function (id,x, y, spdX, spdY, width, height, combatType) {
+var self = Entity('bullet', id, x, y, width, height, Img.bullet) 
 	self.timer = 0;
 	self.combatType = combatType;
+	self.spdX = spdX;
+	self.spdY = spdY;
+
+	self.updatePosition =  function() {
+			self.x += self.spdX;
+			self.y += self.spdY;
+					
+			if(self.x < 0 || self.x > currentMap.width){
+				self.spdX = -self.spdX;
+			}
+			if(self.y < 0 || self.y > currentMap.height){
+				self.spdY = -self.spdY;
+			}
+	}
+
 	bulletList[id] = self;
 }
+
 generateBullet= function(actor, aimOverwrite) {
 	var x  = actor.x;
 	var y = actor.y;
