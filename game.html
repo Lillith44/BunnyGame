@@ -52,13 +52,20 @@ textCollisionRectRect = function(rect1, rect2) {
 }
 
 
-document.onclick = function (mouse) {
-	player.performAttack();
+document.onmousedown = function (mouse) {
+	if(mouse.which === 1)
+		player.pressingMouseLeft = true;
+	else 
+		player.pressingMouseRight = true;
+}
+document.onmouseup = function (mouse) {
+	if(mouse.which === 1)
+		player.pressingMouseLeft = false;
+	else 
+		player.pressingMouseRight = false;
 }
 
-
 document.onconextmenu = function (mouse) {
-	player.performSpecialAttack();
 	mouse.preventDefault();
 }
 
@@ -101,9 +108,9 @@ document.onkeyup = function(event) {
 	frameCount++;
 	score++; 
 	
-	updateBullet();
-	updateUpgrade();
-	updateEnemy();
+	bullet.update();
+	upgrade.update();
+	Enemy.update();
 	
 	player.update(); 
 	
@@ -111,83 +118,18 @@ document.onkeyup = function(event) {
 	ctx.fillText('Score: ' + score, 200, 30);
 }
 
-updateBullet = function() {
-	for(var key in bulletList) {
-		var b  = bulletList[key];
-		b.update();
-	
-		var toRemove = false;
-		b.timer++;
-		if(b.timer > 75) {
-			toRemove = true;
-		}
-		if(b.combatType === 'player'){ //bullet was shot by player
-			for(var key2 in enemyList){
-				
-				if(b.testCollision(enemyList[key2])){
-					toRemove= true;
-					enemyList[key2].hp -= 1;
-					break;
-				}
-			}
-		} else if(b.combatType === 'enemy') {
-			if(b.testCollision(player)){
-				toRemove = true;
-				player.hp -= 1;
-			}
-		}
-
-
-		if(toRemove) {
-			delete bulletList[self.id];
-		}
-
-		
- 	}
-}
-
-updateUpgrade = function() {
-	if(frameCount % 75 === 0) 
-		randomlyGenerateUpgrade();
-	for(var key in upgradeList) {
-	upgradeList[key].update();
-	var isColliding = player.testCollision( upgradeList[key]);
-	if(isColliding){
-		if(upgradeList[key].category === 'score') 
-			score += 100;
-		if(upgradeList[key].category=== 'atkSpd')  
-			player.atkSpd += 3;
-		
-		delete upgradeList[key];
-		
-		}
-	}
-}	
-
-updateEnemy = function() {
-		if(frameCount % 100 === 0) //every 4 sec 
-		randomlyGenerateEnemy();
-	for(var key in enemyList) {
-		enemyList[key].update();
-	}
-	for(var key in enemyList) {
-		if(enemyList[key].toRemove)
-		 delete enemyList[key]
-	}
-}
-	
 
 startNewGame = function() {
 	player.hp = 10; 
 	timeWhenGameStarted = Date.now();
 	frameCount = 0;
 	score = 0;
-	enemyList = {};
-	upgradeList= {};
-	bulletList = {};
-	randomlyGenerateEnemy();
-	randomlyGenerateEnemy();
-	randomlyGenerateEnemy();
+	Enemy.list = {};
+	upgrade.list= {};
+	bullet.list = {};
+	Enemy.randomlyGenerate();
+	Enemy.randomlyGenerate();
+	Enemy.randomlyGenerate();
 }
 
 Maps = function(id, imgSrc, width, height) {
