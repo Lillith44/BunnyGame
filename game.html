@@ -2,7 +2,7 @@
 
 <canvas id="ctx" width="500" height="500" style="border: 1px solid #000000; " ></canvas>
 
-<script src = "Entities.js"></script>
+<script src = "./js/Entities.js"></script>
 <script>
 var ctx = document.getElementById("ctx").getContext("2d");
 ctx.font = '30px Arial';
@@ -37,10 +37,15 @@ document.onmousemove = function(mouse) {
 	var mouseX = mouse.clientX - 8;
 	var mouseY = mouse.clientY - 8;
 	
-	mouseX -= WIDTH/2;
-	mouseY -= HEIGHT/2;
+//	mouseX -= WIDTH/2;
+//	mouseY -= HEIGHT/2;
+// HACK: (WIDTH/2, HEIGHT/2) is (x,y) location of bunny in viewport
+	var diffX = mouseX - WIDTH/2;
+	var diffY = mouseY - HEIGHT/2;
 
-	player.aimAngle = Math.atan2(mouseY, mouseX) / Math.PI * 180;
+	player.aimAngle = Math.atan2(diffY, diffX) / Math.PI * 180
+
+//	player.aimAngle = Math.atan2(mouseY, mouseX) / Math.PI * 180;
 }
 
 
