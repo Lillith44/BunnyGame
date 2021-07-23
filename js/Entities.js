@@ -384,7 +384,7 @@ bullet.update = function() {
 
 
 		if(toRemove) {
-			delete bullet.list[self.id];
+			delete bullet.list[key];
 		}
 
 		
