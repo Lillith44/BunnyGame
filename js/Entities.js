@@ -156,6 +156,8 @@ Player = function () {
 	}
 
 	self.updatePosition = function () {
+		var oldX = self.x;
+		var oldY = self.y;
 
 		if (self.pressingRight)
 			self.x += 10;
@@ -169,12 +171,17 @@ Player = function () {
 		//ispositionvalid
 		if (self.x < self.width / 2)
 			self.x = self.width / 2;
-		if (self.x > currentMap.width - self.width / 2)
-			self.x = currentMap.width - self.width / 2;
+		if (self.x > Maps.current.width - self.width / 2)
+			self.x = Maps.current.width - self.width / 2;
 		if (self.y < self.height / 2)
 			self.y = self.height / 2;
-		if (self.y > currentMap.height - self.height / 2)
-			self.y = currentMap.height - self.height / 2;
+		if (self.y > Maps.current.height - self.height / 2)
+			self.y = Maps.current.height - self.height / 2;
+
+		if(Maps.current.isPositionWall(self)){
+			self.x = oldX;
+			self.y = oldY;
+		}
 	}
 	self.onDeath = function () {
 		var timeSurvived = Date.now() - timeWhenGameStarted;
@@ -236,6 +243,9 @@ Enemy = function (id,x, y, width, height, img, hp, atkSpd) {
 	}
 	
 	self.updatePosition = function(){
+		var oldX = self.x;
+		var oldY = self.y;
+
 		var diffX = player.x - self.x;
 		var diffY = player.y - self.y;
 
@@ -248,6 +258,10 @@ Enemy = function (id,x, y, width, height, img, hp, atkSpd) {
 			self.y += 3;
 		else
 			self.y -= 3;
+		if(Maps.current.isPositionWall(self)) {
+			self.x = oldX;
+			self.y = oldY;
+		}
 	}
 };
 Enemy.list = {};
@@ -263,8 +277,8 @@ for(var key in Enemy.list) {
 }
 }
 Enemy.randomlyGenerate = function() {
-	var x  = Math.random()*currentMap.width;
-	var y = Math.random()*currentMap.height;
+	var x  = Math.random()*Maps.current.width;
+	var y = Math.random()*Maps.current.height;
 	var height = 70
 	var width = 70
 	var id = Math.random();
@@ -300,8 +314,8 @@ upgrade.update = function() {
 }	
 
 upgrade.randomlyGenerate= function() {
-	var x  = Math.random()*currentMap.width;
-	var y = Math.random()*currentMap.height;
+	var x  = Math.random()*Maps.current.width;
+	var y = Math.random()*Maps.current.height;
 	var height = 20 ;
 	var width = 32 ;
 	var id = Math.random();
@@ -328,10 +342,10 @@ var self = Entity('bullet', id, x, y, width, height, Img.bullet)
 			self.x += self.spdX;
 			self.y += self.spdY;
 					
-			if(self.x < 0 || self.x > currentMap.width){
+			if(self.x < 0 || self.x > Maps.current.width){
 				self.spdX = -self.spdX;
 			}
-			if(self.y < 0 || self.y > currentMap.height){
+			if(self.y < 0 || self.y > Maps.current.height){
 				self.spdY = -self.spdY;
 			}
 	}
@@ -363,6 +377,9 @@ bullet.update = function() {
 				toRemove = true;
 				player.hp -= 1;
 			}
+		}
+		if(Maps.current.isPositionWall(b)) {
+			toRemove = true;
 		}
 
 
