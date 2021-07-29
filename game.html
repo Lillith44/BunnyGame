@@ -14,16 +14,29 @@ var ctx = canvas.getContext("2d");
 
 var TILE_SIZE = 32;
 
-var HEIGHT = 500;
-var WIDTH = 500;
+var HEIGHT = 400;
+var WIDTH = 400;
+var CANVAS_HEIGHT = 400;
+var CANVAS_WIDTH = 400;
 var timeWhenGameStarted = Date.now();
 
 let resizeCanvas = function(){
-	WIDTH = window.innerWidth -4;
-	HEIGHT = window.innerHeight -4;
+	CANVAS_WIDTH = window.innerWidth -4;
+	CANVAS_HEIGHT = window.innerHeight -4;
+
+	let ratio = 16 / 9;
+	if(CANVAS_HEIGHT < CANVAS_WIDTH / ratio)
+		CANVAS_WIDTH = CANVAS_HEIGHT * ratio;
+	else 
+	CANVAS_HEIGHT = CANVAS_WIDTH / ratio;
+
 	canvas.width = WIDTH;
 	canvas.height = HEIGHT;
 	ctx.font = '30px Arial';
+
+
+	canvas.style.width = '' + CANVAS_WIDTH + 'px';
+	canvas.style.height = '' + CANVAS_HEIGHT + 'px';
 }
 resizeCanvas();
 
@@ -60,8 +73,8 @@ document.onmousemove = function(mouse) {
 //	mouseX -= WIDTH/2;
 //	mouseY -= HEIGHT/2;
 // HACK: (WIDTH/2, HEIGHT/2) is (x,y) location of bunny in viewport
-	var diffX = mouseX - WIDTH/2;
-	var diffY = mouseY - HEIGHT/2;
+	var diffX = mouseX - CANVAS_WIDTH/2;
+	var diffY = mouseY - CANVAS_HEIGHT/2;
 
 	player.aimAngle = Math.atan2(diffY, diffX) / Math.PI * 180
 
