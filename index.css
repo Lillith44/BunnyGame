@@ -1,0 +1,111 @@
+h1 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 50px;
+    border: 5px solid black;
+    padding: 20px;
+
+}
+body{
+    margin: 40px 100px;
+    line-height:22px;
+}
+a {
+    text-align: center;
+    padding: 40px 100px;
+    margin-top: 30px;
+    margin-bottom:30px;
+    margin-left: 390px;
+    margin-right: 370px;
+    background-color:crimson;
+    font-weight: bold;
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    display:inline-block;
+}
+a:hover {
+    cursor: pointer;
+    background-color: firebrick;
+}
+a:active{
+    color: crimson;
+    background-color: white;
+    border: 2px solid crimson;
+
+}
+#buttonToMain {
+    line-height: 25px;
+}
+div h2 {
+    text-align: center;
+}
+#objective p {
+    text-align: center;
+    font-size: x-large;
+    color: crimson;
+    
+}
+
+img{
+    width: 100%;
+    height: auto;
+}
+.upgrade{
+    width: auto;
+    height: 200px;
+}
+#upgrades p {
+    text-decoration: underline;
+    font-size: large;
+    
+}
+#upgrades h2{
+    border: 2px solid black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#tealCarrot{
+    width: auto;
+    height: 100px;
+}
+#purpleCarrot{
+    width: auto;
+    height: 100px;
+}
+.sprite{
+    width: auto;
+    height: 150px;
+} 
+#sprites{
+    display: inline-block;
+    
+}
+#sprites p {
+   font-size: large;
+   font-weight: bold;
+}
+#sprites h2{
+    border: 2px solid black;
+    padding: 5px 150px;
+}
+#controls{
+    width:300px;
+    height: 300px;
+    display:inline-block;
+    border: 10px dotted darkblue;
+    padding-bottom: 250px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+#upgrades{
+    float: right;
+}
+div{
+    margin: 20px;
+}
+#extra{
+    float:right;
+
+}

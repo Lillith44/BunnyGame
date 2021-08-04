@@ -1,4 +1,6 @@
 <!-- The Bunny Game -->
+<link rel="stylesheet" href="index.css">
+<link href="index.html">
 <body style ="margin:0px">
 <canvas id="canvas" width="500" height="500" style="border: 1px solid #000000; " ></canvas>
 <div id='inventory'></div>
@@ -63,6 +65,8 @@ Img.update1 = new Image();
 Img.update1.src = "img/upgrade1.png"
 Img.update2 = new Image();
 Img.update2.src = "img/upgrade2.png"
+Img.potion = new Image();
+Img.potion.src = "img/potion.png"
 
 
 document.onmousemove = function(mouse) {
@@ -233,3 +237,5 @@ setInterval(update, 40);
 
 
 </script>
+
+<a id="buttonToMain" href="index.html">Back to Main </a>

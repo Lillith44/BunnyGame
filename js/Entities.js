@@ -194,7 +194,7 @@ return self;
 
 Player = function () {
 
-	var self = Actor('player', 'myId', 50, 40, 50, 45, Img.player, 10, 1)
+	var self = Actor('player', 'myId', 300, 300, 50, 45, Img.player, 10, 1)
 	self.pressingMouseLeft = false;
 	self.pressingMouseRight = false;
 	self.maxMoveSpd = 10;
@@ -322,7 +322,8 @@ upgrade.update = function() {
 			score += 100;
 		if(upgrade.list[key].category=== 'atkSpd')  
 			player.atkSpd += 3;
-		
+		if(upgrade.list[key].category === 'potion')
+			player.hp = 10;
 		delete upgrade.list[key];
 		
 		}
@@ -336,12 +337,15 @@ upgrade.randomlyGenerate= function() {
 	var width = 32 ;
 	var id = Math.random();
 	
-	if (Math.random() <0.5) {
+	if (id <0.5) {
 		var category = 'score';
 		var img = Img.update1;
-	}else { 
+	} else if (id >0.5 && id< 0.8){ 
 		var category = 'atkSpd';
 		var img = Img.update2;
+	} else {
+		var category = 'potion';
+		var img = Img.potion;
 	}
 	
 	upgrade(id, x, y, width, height, img ,category);
