@@ -99,6 +99,9 @@ img{
     padding-left: 50px;
     padding-right: 50px;
 }
+#note{
+    text-decoration: underline crimson;
+}
 #upgrades{
     float: right;
 }
