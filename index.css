@@ -112,3 +112,27 @@ div{
     float:right;
 
 }
+footer a {
+    text-align: left;
+    padding: 0px 0px;
+    margin-top: 0px;
+    margin-bottom:0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    background-color: white;
+    font-weight: normal;
+    font-size: 14px;
+    color: black;
+    text-decoration: underline;
+    text-transform: none;
+    display:normal;
+}
+footer a:hover{
+    color: purple;
+    background-color: white;
+}
+footer a:active{
+    color:darkmagenta;
+    background-color: white;
+    border: 2px solid white ;
+}
